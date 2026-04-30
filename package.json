@@ -10,7 +10,7 @@
     "build": "electron-builder --mac --win"
   },
   "keywords": ["folder", "template", "productivity", "motion-design"],
-  "author": "",
+  "author": "Harish",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {

@@ -1,3 +1,6 @@
+// Folder Forge — by Harish
+// https://github.com/harishdehamilton/folder-forge
+
 const { app, BrowserWindow, ipcMain, dialog, shell, globalShortcut } = require('electron');
 const path = require('path');
 const fs = require('fs');
@@ -11,6 +14,7 @@ function createWindow() {
     height: 680,
     minWidth: 720,
     minHeight: 520,
+    show: false,
     titleBarStyle: 'hiddenInset',
     backgroundColor: '#111118',
     trafficLightPosition: { x: 16, y: 14 },
@@ -19,6 +23,10 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
     },
+  });
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
   });
 
   mainWindow.loadFile(path.join(__dirname, 'index.html'));

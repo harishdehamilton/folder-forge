@@ -1,3 +1,6 @@
+// Folder Forge — by Harish
+// https://github.com/harishdehamilton/folder-forge
+
 // ---- State ----
 let templates = [];
 let activeTemplateId = null;
