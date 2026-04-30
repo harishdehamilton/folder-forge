@@ -9,15 +9,19 @@ const templateStore = require('./template-store');
 let mainWindow;
 
 function createWindow() {
+  const isMac = process.platform === 'darwin';
+
   mainWindow = new BrowserWindow({
     width: 960,
     height: 680,
     minWidth: 720,
     minHeight: 520,
     show: false,
-    titleBarStyle: 'hiddenInset',
+    ...(isMac
+      ? { titleBarStyle: 'hiddenInset', trafficLightPosition: { x: 16, y: 14 } }
+      : { titleBarStyle: 'hidden', titleBarOverlay: { color: '#1a1a26', symbolColor: '#9e9ebc', height: 42 } }
+    ),
     backgroundColor: '#111118',
-    trafficLightPosition: { x: 16, y: 14 },
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
