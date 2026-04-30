@@ -119,6 +119,8 @@ ipcMain.handle('create-from-template', async (event, { templateId, targetDir, pr
   const template = templateStore.getById(templateId);
   if (!template) throw new Error('Template not found');
 
+  const fromContextMenu = !!targetDir;
+
   if (!targetDir) {
     const result = await dialog.showOpenDialog(mainWindow, {
       properties: ['openDirectory'],
@@ -138,10 +140,12 @@ ipcMain.handle('create-from-template', async (event, { templateId, targetDir, pr
     const usedName = structure[0]?.name || projectName || template.name;
     createFolders(structure, targetDir);
 
-    // Open in Finder
-    const createdPath = path.join(targetDir, structure[0]?.name || '');
-    if (fs.existsSync(createdPath)) {
-      shell.openPath(createdPath);
+    // Only open folder if launched from the app (not from context menu)
+    if (!fromContextMenu) {
+      const createdPath = path.join(targetDir, structure[0]?.name || '');
+      if (fs.existsSync(createdPath)) {
+        shell.openPath(createdPath);
+      }
     }
 
     return { success: true, path: targetDir, projectName: usedName };
