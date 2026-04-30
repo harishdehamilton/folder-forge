@@ -11,7 +11,7 @@
   },
   "keywords": ["folder", "template", "productivity", "motion-design"],
   "author": "Harish",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
     "electron": "^41.3.0",

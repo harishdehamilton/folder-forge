@@ -1,7 +1,7 @@
 // Folder Forge — by Harish
 // https://github.com/harishdehamilton/folder-forge
 
-const { app, BrowserWindow, ipcMain, dialog, shell, globalShortcut } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const templateStore = require('./template-store');
