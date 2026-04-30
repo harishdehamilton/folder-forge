@@ -12,4 +12,5 @@ contextBridge.exposeInMainWorld('api', {
   createFromTemplate: (data) => ipcRenderer.invoke('create-from-template', data),
   pickDirectory: () => ipcRenderer.invoke('pick-directory'),
   revealInFinder: (path) => ipcRenderer.invoke('reveal-in-finder', path),
+  onContextMenuCreate: (callback) => ipcRenderer.on('context-menu-create', (_, dir) => callback(dir)),
 });

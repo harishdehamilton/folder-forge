@@ -34,6 +34,15 @@ function createWindow() {
   });
 
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
+
+  // Handle --create-at argument from Windows context menu
+  mainWindow.webContents.on('did-finish-load', () => {
+    const createAtArg = process.argv.find(a => a.startsWith('--create-at='));
+    if (createAtArg) {
+      const targetDir = createAtArg.replace('--create-at=', '');
+      mainWindow.webContents.send('context-menu-create', targetDir);
+    }
+  });
 }
 
 app.whenReady().then(() => {

@@ -29,6 +29,11 @@
       "icon": "assets/icon.png",
       "target": ["nsis"]
     },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "include": "build/installer.nsh"
+    },
     "files": [
       "src/**/*"
     ],

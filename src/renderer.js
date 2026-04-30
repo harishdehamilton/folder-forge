@@ -18,9 +18,22 @@ const $folderCount = document.getElementById('folder-count');
 const $toastContainer = document.getElementById('toast-container');
 
 // ---- Init ----
+let contextMenuTargetDir = null;
+
 async function init() {
   templates = await window.api.getTemplates();
   renderTemplateList();
+
+  // Handle Windows context menu launch
+  window.api.onContextMenuCreate((dir) => {
+    contextMenuTargetDir = dir;
+    if (templates.length === 1) {
+      selectTemplate(templates[0].id);
+      triggerContextMenuCreate(templates[0]);
+    } else if (templates.length > 0) {
+      showTemplatePicker();
+    }
+  });
 }
 init();
 
@@ -451,5 +464,73 @@ function debounce(fn, ms) {
   return (...args) => {
     clearTimeout(timer);
     timer = setTimeout(() => fn(...args), ms);
+  };
+}
+
+// ---- Context Menu (Windows) ----
+function showTemplatePicker() {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <h3>Choose a Template</h3>
+      <p class="modal-desc">Select a template to create at this location.</p>
+      <ul class="template-picker-list" style="list-style:none;max-height:300px;overflow-y:auto;margin-bottom:18px;"></ul>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="picker-cancel">Cancel</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  const list = overlay.querySelector('.template-picker-list');
+  for (const tpl of templates) {
+    const li = document.createElement('li');
+    li.style.cssText = 'padding:10px 12px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:4px;border:1px solid var(--border);';
+    li.innerHTML = `
+      <div class="tpl-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="5" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 7c0-1.1.9-2 2-2h3.5l2 2H14c1.1 0 2 .9 2 2" stroke="currentColor" stroke-width="1.5"/></svg></div>
+      <div><div class="tpl-name">${escapeHtml(tpl.name)}</div><div class="tpl-count">${countFolders(tpl.structure)} folders</div></div>
+    `;
+    li.addEventListener('mouseenter', () => li.style.background = 'var(--bg-hover)');
+    li.addEventListener('mouseleave', () => li.style.background = '');
+    li.addEventListener('click', () => {
+      overlay.remove();
+      selectTemplate(tpl.id);
+      triggerContextMenuCreate(tpl);
+    });
+    list.appendChild(li);
+  }
+
+  overlay.querySelector('#picker-cancel').addEventListener('click', () => {
+    contextMenuTargetDir = null;
+    overlay.remove();
+  });
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) { contextMenuTargetDir = null; overlay.remove(); }
+  });
+}
+
+function triggerContextMenuCreate(tpl) {
+  $modalOverlay.classList.remove('hidden');
+  $projectNameInput.value = '';
+  $projectNameInput.placeholder = tpl.structure[0]?.name || 'Project_Name';
+  updateModalPreview(tpl, '');
+  setTimeout(() => $projectNameInput.focus(), 50);
+
+  // Override the create button to use the context menu target dir
+  const originalHandler = $modalCreate.onclick;
+  $modalCreate.onclick = async () => {
+    const projectName = $projectNameInput.value.trim();
+    $modalOverlay.classList.add('hidden');
+    const result = await window.api.createFromTemplate({
+      templateId: tpl.id,
+      targetDir: contextMenuTargetDir,
+      projectName: projectName || null,
+    });
+    contextMenuTargetDir = null;
+    $modalCreate.onclick = originalHandler;
+    if (result.canceled) return;
+    if (result.success) showToast(`"${result.projectName}" created successfully`, 'success');
+    else showToast(`Error: ${result.error}`, 'error');
   };
 }
