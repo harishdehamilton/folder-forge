@@ -394,9 +394,9 @@ $projectNameInput.addEventListener('input', () => {
   if (tpl) updateModalPreview(tpl, $projectNameInput.value);
 });
 
-$modalCancel.addEventListener('click', () => $modalOverlay.classList.add('hidden'));
+$modalCancel.addEventListener('click', () => { contextMenuTargetDir = null; $modalOverlay.classList.add('hidden'); });
 $modalOverlay.addEventListener('click', (e) => {
-  if (e.target === $modalOverlay) $modalOverlay.classList.add('hidden');
+  if (e.target === $modalOverlay) { contextMenuTargetDir = null; $modalOverlay.classList.add('hidden'); }
 });
 
 $modalCreate.addEventListener('click', async () => {
@@ -407,8 +407,10 @@ $modalCreate.addEventListener('click', async () => {
 
   const result = await window.api.createFromTemplate({
     templateId: tpl.id,
+    targetDir: contextMenuTargetDir || undefined,
     projectName: projectName || null,
   });
+  contextMenuTargetDir = null;
   if (result.canceled) return;
   if (result.success) {
     showToast(`"${result.projectName}" created successfully`, 'success');
@@ -511,26 +513,5 @@ function showTemplatePicker() {
 }
 
 function triggerContextMenuCreate(tpl) {
-  $modalOverlay.classList.remove('hidden');
-  $projectNameInput.value = '';
-  $projectNameInput.placeholder = tpl.structure[0]?.name || 'Project_Name';
-  updateModalPreview(tpl, '');
-  setTimeout(() => $projectNameInput.focus(), 50);
-
-  // Override the create button to use the context menu target dir
-  const originalHandler = $modalCreate.onclick;
-  $modalCreate.onclick = async () => {
-    const projectName = $projectNameInput.value.trim();
-    $modalOverlay.classList.add('hidden');
-    const result = await window.api.createFromTemplate({
-      templateId: tpl.id,
-      targetDir: contextMenuTargetDir,
-      projectName: projectName || null,
-    });
-    contextMenuTargetDir = null;
-    $modalCreate.onclick = originalHandler;
-    if (result.canceled) return;
-    if (result.success) showToast(`"${result.projectName}" created successfully`, 'success');
-    else showToast(`Error: ${result.error}`, 'error');
-  };
+  showProjectNameModal(tpl);
 }
