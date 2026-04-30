@@ -71,11 +71,11 @@
   " fill="url(#folderFront)"/>
 
   <!-- Hammer handle -->
-  <rect x="488" y="460" width="28" height="170" rx="7" fill="#8b7baa" transform="rotate(-35, 502, 545)"/>
+  <rect x="498" y="505" width="28" height="170" rx="7" fill="#8b7baa" transform="rotate(-35, 512, 590)"/>
 
   <!-- Hammer head -->
-  <g transform="rotate(-35, 502, 545)">
-    <rect x="455" y="440" width="94" height="44" rx="9" fill="#b8a8d8"/>
-    <rect x="455" y="440" width="94" height="44" rx="9" fill="url(#folderGrad)" opacity="0.5"/>
+  <g transform="rotate(-35, 512, 590)">
+    <rect x="465" y="485" width="94" height="44" rx="9" fill="#b8a8d8"/>
+    <rect x="465" y="485" width="94" height="44" rx="9" fill="url(#folderGrad)" opacity="0.5"/>
   </g>
 </svg>
