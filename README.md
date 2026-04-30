@@ -13,7 +13,16 @@ A desktop app for creating reusable folder structures. Built for motion designer
 - Auto-opens created folders in Finder
 - Keyboard shortcuts: `Cmd+N` new, `Cmd+I` import, `Cmd+Enter` create, `Cmd+D` duplicate
 
-## Install
+## Download
+
+Grab the latest `.dmg` from [Releases](https://github.com/harishdehamilton/folder-forge/releases).
+
+> **macOS Gatekeeper warning:** Since the app isn't signed with an Apple Developer certificate, macOS will block it on first launch. To fix this:
+> 1. Go to **System Settings > Privacy & Security**
+> 2. Scroll down — you'll see a message about "Folder Forge" being blocked
+> 3. Click **Open Anyway** and confirm
+
+## Build from source
 
 ```bash
 npm install
