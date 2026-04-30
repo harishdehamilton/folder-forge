@@ -30,7 +30,9 @@
       "target": ["nsis"]
     },
     "files": [
-      "src/**/*",
+      "src/**/*"
+    ],
+    "asarUnpack": [
       "assets/**/*"
     ]
   }
